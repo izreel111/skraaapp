@@ -1,0 +1,90 @@
+{
+  "title": "Door Design Lab configurator scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Product URLs",
+      "type": "array",
+      "description": "List of doordesignlab.com product page URLs to scrape (e.g. https://doordesignlab.com/optima-4h-pecan-nutwood.html). This is the main input.",
+      "editor": "requestListSources",
+      "prefill": [
+        { "url": "https://doordesignlab.com/optima-4h-pecan-nutwood.html" }
+      ]
+    },
+    "productIds": {
+      "title": "Product IDs (optional)",
+      "type": "array",
+      "description": "Alternative to URLs: Magento product ids (the data-id of #configuratorProductId). Each is fetched via /configurator/ajax/start/?product_id=ID. Use only if you don't have URLs.",
+      "editor": "stringList"
+    },
+    "harvestMode": {
+      "title": "Option harvesting",
+      "type": "string",
+      "description": "How much of the DYNAMIC option catalog to load. The start config only ships slab/config options; frame, hinges, handles, locksets, locks, pre-hanging etc. are loaded by replaying /configurator/ajax/. 'path' = one default walk (~10-15 requests). 'branches' = diverge at choice steps to collect common alternates (fast, partial). 'full' = coverage-driven exploration of every STRUCTURAL branch, chasing ~100% step coverage (slow — hundreds of requests/minutes per product; best-effort, may not hit 100% on the biggest templates within budget). 'none' = tree only. NOTE: option catalogs are shared across all products of a TEMPLATE (what-config / metal-frame / …) — run 'full' once per template, not per product.",
+      "enum": ["path", "branches", "full", "none"],
+      "enumTitles": ["Path (recommended build, fast)", "Branches (common alternates)", "Full (all branches, slow)", "None (tree only)"],
+      "default": "path"
+    },
+    "maxBranchWalks": {
+      "title": "Max branch/full walks",
+      "type": "integer",
+      "description": "Upper bound on divergent walks per product (each ≈ 10-15 requests). For 'branches' ~14 is plenty; for 'full' set high (200-500) and give it a large walkTimeoutSecs to approach complete coverage.",
+      "default": 14,
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "branchCap": {
+      "title": "Branch cap (full mode)",
+      "type": "integer",
+      "description": "Only for harvestMode = 'full'. Diverge only on decision steps with at most this many options (structural branchers: type/direction/yes-no/function). Bigger product lists are captured once, not branched. Raise only if a large list is known to branch.",
+      "default": 8,
+      "minimum": 2,
+      "maximum": 30
+    },
+    "walkTimeoutSecs": {
+      "title": "Harvest time budget (s)",
+      "type": "integer",
+      "description": "Per-product wall-clock budget for all configurator POSTs. Harvesting stops when exceeded and returns whatever was collected.",
+      "default": 60,
+      "minimum": 10,
+      "maximum": 300
+    },
+    "expandDoorTypes": {
+      "title": "Auto-discover door types",
+      "type": "boolean",
+      "description": "Each door TYPE (Swing, Frameless, Double Swing, Only Slab, Pocket, Double Pocket, Barn, Bypass, Bi-Fold, Hidden barn) is a SEPARATE product URL with its OWN steps. When on, the actor reads the config_first step of each product and enqueues all sibling door-type URLs, so one input URL per model yields every door type. Multiplies work ~10× per model — deduped by URL.",
+      "default": false
+    },
+    "buildBom": {
+      "title": "Build default BOM",
+      "type": "boolean",
+      "description": "Assemble the finished bill of materials (slab + frame/jamb/header/hinges + handle + lockset + …) with a total price from the default walk. The full configurator tree is always extracted regardless.",
+      "default": true
+    },
+    "maxConcurrency": {
+      "title": "Max concurrency",
+      "type": "integer",
+      "description": "How many products to process in parallel. Keep moderate (5–10) to stay under Cloudflare's radar.",
+      "default": 8,
+      "minimum": 1,
+      "maximum": 50
+    },
+    "maxRequestRetries": {
+      "title": "Max retries per product",
+      "type": "integer",
+      "description": "Retries when Cloudflare blocks the request or the configurator fails to load. A new proxy IP / browser session is used on each retry.",
+      "default": 5,
+      "minimum": 0,
+      "maximum": 15
+    },
+    "proxyConfiguration": {
+      "title": "Proxy",
+      "type": "object",
+      "description": "Proxy settings. RESIDENTIAL Apify proxy is strongly recommended — Cloudflare's managed challenge blocks datacenter IPs.",
+      "editor": "proxy",
+      "default": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"] }
+    }
+  },
+  "required": []
+}

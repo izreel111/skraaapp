@@ -1,0 +1,36 @@
+{
+  "actorSpecification": 1,
+  "name": "doordesignlab-configurator-scraper",
+  "title": "Door Design Lab configurator scraper",
+  "description": "Extracts the full Magento door configurator (steps, options, prices, SKUs) and the default BOM from doordesignlab.com product pages.",
+  "version": "1.0",
+  "meta": {
+    "templateId": "js-playwright"
+  },
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "overview": {
+          "title": "Overview",
+          "transformation": {
+            "fields": ["url", "productId", "name", "hasConfigurator", "basePrice", "bomTotal", "configurator.stepsCount"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "url": { "label": "URL", "format": "link" },
+              "productId": { "label": "Product ID" },
+              "name": { "label": "Name" },
+              "hasConfigurator": { "label": "Configurator?" },
+              "basePrice": { "label": "Base price" },
+              "bomTotal": { "label": "BOM total" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

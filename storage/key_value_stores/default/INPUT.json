@@ -1,0 +1,12 @@
+{
+  "startUrls": [
+    { "url": "https://doordesignlab.com/optima-4h-pecan-nutwood.html" }
+  ],
+  "expandDoorTypes": true,
+  "harvestMode": "path",
+  "buildBom": true,
+  "maxConcurrency": 8,
+  "maxRequestRetries": 5,
+  "walkTimeoutSecs": 60,
+  "proxyConfiguration": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"] }
+}

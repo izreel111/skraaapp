@@ -1,0 +1,7 @@
+node_modules/
+storage/datasets/
+storage/request_queues/
+storage/key_value_stores/default/*
+!storage/key_value_stores/default/INPUT.json
+.DS_Store
+apify_storage/

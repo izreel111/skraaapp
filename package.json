@@ -1,0 +1,17 @@
+{
+  "name": "doordesignlab-configurator-scraper",
+  "version": "1.0.0",
+  "description": "Fast Apify scraper for doordesignlab.com Magento door configurators. Extracts the full configurator tree (steps, options, prices, SKUs) + default BOM in one page load per product.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "apify": "^3.2.6",
+    "crawlee": "^3.11.5",
+    "playwright": "*"
+  }
+}
