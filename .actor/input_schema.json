@@ -6,11 +6,8 @@
     "startUrls": {
       "title": "Product URLs",
       "type": "array",
-      "description": "List of doordesignlab.com product page URLs to scrape (e.g. https://doordesignlab.com/optima-4h-pecan-nutwood.html). This is the main input.",
-      "editor": "requestListSources",
-      "prefill": [
-        { "url": "https://doordesignlab.com/optima-4h-pecan-nutwood.html" }
-      ]
+      "description": "List of doordesignlab.com product page URLs to scrape. LEAVE EMPTY to scrape the entire bundled Interior Doors category (592 products). Set expandDoorTypes:true to also collect every door-type category (Swing/Frameless/Double/Pocket/Bypass/…) of each model.",
+      "editor": "requestListSources"
     },
     "productIds": {
       "title": "Product IDs (optional)",

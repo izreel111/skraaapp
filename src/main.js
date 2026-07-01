@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { Actor } from 'apify';
 import { PlaywrightCrawler, log } from 'crawlee';
 import { pageExtract } from './pageExtract.js';
@@ -40,7 +41,20 @@ for (const id of productIds) {
         });
     }
 }
-if (!requests.length) throw new Error('No input. Provide startUrls (product URLs) and/or productIds.');
+// Fallback: if no URLs/ids were supplied in the input, run the FULL bundled
+// Interior Doors category list (592 URLs shipped in the image). This makes a plain
+// "Start" (with the default/empty input) scrape the whole category — combine with
+// expandDoorTypes:true to also collect every door-type category of each model.
+if (!requests.length) {
+    try {
+        const bundled = JSON.parse(await readFile(new URL('../interior-doors-urls.json', import.meta.url)));
+        for (const url of bundled) if (url) requests.push({ url, userData: { mode: 'product' } });
+        log.info(`No startUrls in input — using bundled Interior Doors list: ${requests.length} URLs.`);
+    } catch (e) {
+        throw new Error('No input and bundled Interior Doors list not found. Provide startUrls.');
+    }
+}
+log.info(`Queued ${requests.length} start URLs (expandDoorTypes=${expandDoorTypes}, harvestMode=${harvestMode}).`);
 
 // Domains we never need — blocking them cuts page-load time dramatically and
 // avoids third-party scripts hanging the load. Same-origin JS (jQuery, Vue,
